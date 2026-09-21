@@ -1,27 +1,21 @@
 # ECTS GPU Worker (ASUS)
 
-Installation **automatique** sur Windows + NVIDIA.
+## Methode simple : Docker (recommandee)
 
-## Quick start
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop/) + redemarrage PC
+2. Extraire le zip
+3. Copier `.env.example` -> `.env` (token GPU du VPS)
+4. **`run-docker.bat`**
 
-```powershell
-# Extraire le zip, puis :
-.\install.ps1   # installe Python (winget) si besoin, GPU check, deps
-.\run.ps1       # lance le worker (relance install.ps1 si .venv absent)
-```
+Pas de Python a installer sur Windows. CUDA gere dans le container.
 
-## Ce que install.ps1 fait
+## Methode native (avancee)
 
-1. Verifie `nvidia-smi` (pilotes NVIDIA)
-2. Installe **Python 3.12** via `winget` si absent
-3. Cree `.venv`, installe PyTorch CUDA + faster-whisper
-4. Cree `.env` depuis `.env.example` si manquant
+Necessite **Python 3.12** (pas 3.13/3.15). Sinon utiliser Docker.
 
-Options :
-
-```powershell
-.\install.ps1 -SkipGpuCheck      # PC sans NVIDIA (debug seulement)
-.\install.ps1 -SkipPythonInstall # Python deja installe manuellement
+```cmd
+install.bat
+run.bat
 ```
 
 ## Configuration (.env)

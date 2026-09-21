@@ -3,8 +3,8 @@ $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
 
 if (-not (Test-Path ".venv")) {
-    Write-Host "Premiere installation detectee — lancement install.ps1"
-    & "$Root\install.ps1"
+    Write-Host "Premiere installation detectee - lancement install.ps1"
+    powershell -NoProfile -ExecutionPolicy Bypass -File "$Root\install.ps1"
 }
 
 if (Test-Path ".env") {

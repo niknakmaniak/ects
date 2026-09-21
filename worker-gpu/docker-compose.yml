@@ -1,0 +1,6 @@
+services:
+  ects-gpu-worker:
+    build: .
+    env_file: .env
+    restart: unless-stopped
+    gpus: all
