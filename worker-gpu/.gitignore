@@ -1,0 +1,4 @@
+python312/
+.venv/
+python-3.12*.exe
+.env

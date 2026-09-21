@@ -1,28 +1,13 @@
-ECTS GPU Worker — ASUS (RTX)
+ECTS GPU Worker — ASUS
 
-=== METHODE RECOMMANDEE : DOCKER ===
+1. Extraire le zip
+2. Double-clic install.bat  (telecharge Python 3.12 dans le dossier, ~25 Mo)
+3. Editer .env :
+   GPU_WORKER_URL=http://148.113.242.154:8080
+   ECTS_GPU_WORKER_TOKEN=ton_token_vps
+   WHISPER_MODEL=large-v3
+4. Double-clic run.bat  (laisser ouvert)
 
-1. Installer Docker Desktop (Windows)
-   https://www.docker.com/products/docker-desktop/
-   Redemarrer le PC apres install.
+Pas de Docker. Pas de redemarrage. Ton Python 3.15 Windows est ignore.
 
-2. Extraire ce zip (ex. C:\ects-gpu-worker)
-
-3. Double-clic run-docker.bat
-   - cree .env si absent
-   - editer .env : ECTS_GPU_WORKER_TOKEN=...
-   - relancer run-docker.bat
-
-4. Laisser la fenetre ouverte. Le worker poll le VPS.
-
-VPS panel : http://148.113.242.154:8080/panel
-
-=== .env minimum ===
-GPU_WORKER_URL=http://148.113.242.154:8080
-ECTS_GPU_WORKER_TOKEN=colle_ton_token_vps
-WHISPER_MODEL=large-v3
-WORKER_ID=asus-rtx5080
-
-=== Methode native (sans Docker) ===
-Seulement si tu as Python 3.12 installe (PAS 3.13/3.15).
-install.bat puis run.bat
+Panel : http://148.113.242.154:8080/panel
