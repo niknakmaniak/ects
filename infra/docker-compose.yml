@@ -27,7 +27,9 @@ services:
     env_file: ../.env
     environment:
       DATABASE_URL: postgresql+psycopg://ects:ects@postgres:5432/ects
+      ECTS_DATA_DIR: /data
       ECTS_REPO_ROOT: /repo
+      PYTHONPATH: /app
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
@@ -43,7 +45,7 @@ services:
         max-file: "5"
 
   tectonic:
-    image: ghcr.io/tectonic-typesetting/tectonic@sha256:latest
+    image: ghcr.io/tectonic-typesetting/tectonic:latest
     profiles: ["latex"]
     volumes:
       - ..:/repo
