@@ -4,10 +4,33 @@
 import argparse
 import logging
 import os
+import sys
 import tempfile
 import time
 import uuid
 from pathlib import Path
+
+
+def _setup_cuda_dll_paths() -> None:
+    """Windows: charge cublas/cudnn depuis le venv (ctranslate2 / PyTorch)."""
+    if sys.platform != "win32":
+        return
+    root = Path(__file__).resolve().parent
+    site = root / ".venv" / "Lib" / "site-packages"
+    for rel in (
+        "nvidia/cublas/bin",
+        "nvidia/cudnn/bin",
+        "nvidia/cuda_runtime/bin",
+        "torch/lib",
+        "ctranslate2",
+    ):
+        dll_dir = site / rel.replace("/", os.sep)
+        if dll_dir.is_dir():
+            os.add_dll_directory(str(dll_dir))
+            os.environ["PATH"] = str(dll_dir) + os.pathsep + os.environ.get("PATH", "")
+
+
+_setup_cuda_dll_paths()
 
 import httpx
 
