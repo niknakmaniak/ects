@@ -70,16 +70,23 @@ def extract_all(job, work: Path) -> dict:
     for path in sorted(input_dir.rglob("*")):
         if not path.is_file():
             continue
+        if path.name.lower() == "ready.txt":
+            continue
         kind = classify_file(path)
         text = ""
-        if path.suffix.lower() == ".pdf":
-            text = extract_pdf(path)
-        elif path.suffix.lower() in {".docx", ".doc"}:
-            text = extract_docx(path)
-        elif path.suffix.lower() in {".pptx", ".ppt"}:
-            text = extract_pptx(path)
-        elif path.suffix.lower() in {".txt", ".vtt", ".srt", ".md"}:
-            text = _read_text_file(path)
+        try:
+            if path.suffix.lower() == ".pdf":
+                text = extract_pdf(path)
+            elif path.suffix.lower() in {".docx", ".doc"}:
+                text = extract_docx(path)
+            elif path.suffix.lower() in {".pptx", ".ppt"}:
+                text = extract_pptx(path)
+            elif path.suffix.lower() in {".txt", ".vtt", ".srt", ".md"}:
+                text = _read_text_file(path)
+        except Exception as e:
+            logger.warning("Extraction ignoree pour %s: %s", path.name, e)
+            bundle["files"].append({"path": str(path.relative_to(work)), "kind": kind, "error": str(e)})
+            continue
 
         rel = str(path.relative_to(work))
         bundle["files"].append({"path": rel, "kind": kind, "chars": len(text)})

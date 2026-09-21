@@ -100,8 +100,18 @@ def has_audio(job: SessionJob) -> bool:
 
 
 def has_transcription(job: SessionJob) -> bool:
-    names = {p.name.lower() for p in list_input_files(job)}
-    return any("transcript" in n or n.endswith(".txt") or n.endswith(".vtt") for n in names)
+    ignore = {"ready.txt"}
+    for p in list_input_files(job):
+        name = p.name.lower()
+        if name in ignore:
+            continue
+        if name == "transcription_whisper.txt":
+            return True
+        if "transcript" in name:
+            return True
+        if name.endswith((".vtt", ".srt")):
+            return True
+    return False
 
 
 def update_job_status(db: Session, job: SessionJob, status: JobStatus, step: JobStep | None = None, error: str | None = None):
