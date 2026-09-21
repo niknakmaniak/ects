@@ -64,6 +64,7 @@ def main():
     sftp.close()
 
     run(client, f"chmod 600 {ECTS_DIR}/.env")
+    run(client, f"cd {ECTS_DIR} && git pull --ff-only")
     run(client, f"cd {ECTS_DIR} && git config --global --add safe.directory {ECTS_DIR}")
     run(client, f"cd {ECTS_DIR} && git config user.name 'ECTS Bot' && git config user.email 'ects@bot.local'")
 
