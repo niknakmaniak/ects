@@ -89,7 +89,7 @@ class IntakeService:
             return None
         subject, session_date = parsed
         slug = folder.name
-        db = self.db_factory()
+        db = self.db_factory()()
         try:
             job = create_job(db, folder, slug, subject, session_date)
             self.processed.add(slug)

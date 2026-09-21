@@ -33,7 +33,7 @@ class JobRunner:
             await asyncio.sleep(5)
 
     async def tick(self):
-        db = self.db_factory()
+        db = self.db_factory()()
         try:
             jobs = (
                 db.query(SessionJob)
@@ -51,7 +51,7 @@ class JobRunner:
             db.close()
 
     async def process_job(self, job_id: int):
-        db = self.db_factory()
+        db = self.db_factory()()
         try:
             job = db.query(SessionJob).filter(SessionJob.id == job_id).one()
             await self.pipeline.advance(db, job, force=True)
