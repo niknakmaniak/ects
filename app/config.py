@@ -26,9 +26,10 @@ class Settings(BaseSettings):
     drive_finished_folder_id: str = ""
     drive_error_folder_id: str = ""
 
-    llm_provider: str = "openai"
+    llm_provider: str = "moonshot"
     llm_api_key: str = ""
-    llm_model: str = "gpt-4o-mini"
+    llm_base_url: str = "https://api.moonshot.cn/v1"
+    llm_model: str = "moonshot-v1-128k"
     llm_monthly_budget_eur: float = 20.0
 
     git_remote_url: str = "https://github.com/niknakmaniak/ects.git"

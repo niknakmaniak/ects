@@ -14,10 +14,13 @@ async def _call_llm(system: str, user: str) -> str:
         logger.warning("LLM_API_KEY absent — mode stub")
         return _stub_response(user)
 
-    if settings.llm_provider == "openai":
+    if settings.llm_provider in ("openai", "moonshot"):
         from openai import OpenAI
 
-        client = OpenAI(api_key=settings.llm_api_key)
+        kwargs = {"api_key": settings.llm_api_key}
+        if settings.llm_provider == "moonshot" or settings.llm_base_url:
+            kwargs["base_url"] = settings.llm_base_url or "https://api.moonshot.cn/v1"
+        client = OpenAI(**kwargs)
         resp = client.chat.completions.create(
             model=settings.llm_model,
             messages=[
