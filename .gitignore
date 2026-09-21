@@ -1,0 +1,30 @@
+# Secrets — ne jamais committer
+.env
+*.pem
+credentials/
+service-account.json
+
+# Runtime
+data/
+work/
+*.db
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# LaTeX build
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+
+# Models GPU
+models/
+adapters/
+
+# OS
+.DS_Store
+Thumbs.db

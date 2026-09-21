@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>ECTS — Tableau de bord</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>ECTS</h1>
+    <p>Transformation automatique de séances de cours</p>
+  </header>
+  <main>
+    <table>
+      <thead>
+        <tr>
+          <th>Séance</th>
+          <th>Matière</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Étape</th>
+          <th>Deadline</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr class="status-{{ job.status.value }}">
+          <td>{{ job.slug }}</td>
+          <td>{{ job.subject }}</td>
+          <td>{{ job.session_date }}</td>
+          <td><span class="badge">{{ job.status.value }}</span></td>
+          <td>{{ job.current_step.value if job.current_step else '—' }}</td>
+          <td>{{ job.deadline_at.strftime('%d/%m %H:%M') }}</td>
+          <td><a href="/jobs/{{ job.id }}">Détail</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">Aucune séance — déposez un dossier dans <code>data/inbox/Matiere__YYYY-MM-DD/READY.txt</code></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

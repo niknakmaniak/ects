@@ -1,0 +1,16 @@
+{
+  "subject": "Psychologie",
+  "heading_depth": 3,
+  "section_order": [
+    "Paradigmes et méthodes",
+    "Behaviorisme",
+    "Concepts clés",
+    "Applications et débats",
+    "À retenir"
+  ],
+  "tone": "notes_etudiant",
+  "language": "fr",
+  "session_count": 0,
+  "learned_headings": [],
+  "lora_adapter_path": null
+}

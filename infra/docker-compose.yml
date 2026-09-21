@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ects
+      POSTGRES_PASSWORD: ects
+      POSTGRES_DB: ects
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ects"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  ects-api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.api
+    restart: unless-stopped
+    env_file: ../.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://ects:ects@postgres:5432/ects
+      ECTS_REPO_ROOT: /repo
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ..:/repo
+      - ects_data:/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  tectonic:
+    image: ghcr.io/tectonic-typesetting/tectonic@sha256:latest
+    profiles: ["latex"]
+    volumes:
+      - ..:/repo
+
+volumes:
+  pgdata:
+  ects_data:

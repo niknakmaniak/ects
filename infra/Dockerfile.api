@@ -1,0 +1,7 @@
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app ./app
+COPY templates ./templates
+COPY profiles ./profiles
+COPY worker-gpu ./worker-gpu
