@@ -21,9 +21,9 @@ venv/
 *.fls
 *.fdb_latexmk
 
-# Models GPU
-models/
-adapters/
+# Models GPU (racine uniquement — pas app/models/)
+/models/
+/adapters/
 
 # OS
 .DS_Store
