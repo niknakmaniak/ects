@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
@@ -100,6 +100,26 @@ def gpu_claim(worker_id: str = "gpu-1", db=Depends(get_db), role=Depends(verify_
     return GpuClaimResponse(
         job_id=job.id, slug=job.slug, work_path=job.work_path, audio_files=audio_files, fencing_token=token
     )
+
+
+@router.get("/v1/gpu/{job_id}/audio/{filename}")
+def gpu_download_audio(job_id: int, filename: str, db=Depends(get_db), role=Depends(verify_token)):
+    if role != "gpu":
+        raise HTTPException(403, "GPU token required")
+    job = db.query(SessionJob).filter(SessionJob.id == job_id).first()
+    if not job:
+        raise HTTPException(404)
+    if job.status not in (JobStatus.WAITING_GPU, JobStatus.PROCESSING):
+        raise HTTPException(409, "Job not available for GPU download")
+    from app.services.jobs import list_input_files
+
+    allowed = {p.name for p in list_input_files(job) if p.suffix.lower() in {".m4a", ".mp3", ".wav", ".aac"}}
+    if filename not in allowed:
+        raise HTTPException(404, "Audio file not found")
+    path = Path(job.work_path) / "input" / filename
+    if not path.is_file():
+        raise HTTPException(404)
+    return FileResponse(path, filename=filename)
 
 
 @router.post("/v1/gpu/{job_id}/complete")

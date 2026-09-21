@@ -31,7 +31,7 @@ services:
       ECTS_REPO_ROOT: /repo
       PYTHONPATH: /app
     ports:
-      - "127.0.0.1:8080:8080"
+      - "8080:8080"
     volumes:
       - ..:/repo
       - ects_data:/data

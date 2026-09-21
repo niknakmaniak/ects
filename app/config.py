@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     llm_provider: str = "moonshot"
     llm_api_key: str = ""
     llm_base_url: str = "https://api.moonshot.cn/v1"
-    llm_model: str = "moonshot-v1-128k"
+    llm_model: str = "kimi-k3"
     llm_monthly_budget_eur: float = 20.0
 
     git_remote_url: str = "https://github.com/niknakmaniak/ects.git"
