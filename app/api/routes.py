@@ -1,16 +1,13 @@
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import FileResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel
 
-from app.db.models import CorrectionStatus, JobStatus, SessionJob, get_session_factory
+from app.db.models import JobStatus, SessionJob, get_session_factory
 from app.services.pipeline import claim_gpu_job, complete_gpu_transcription
-from app.services.review import approve_correction
 
 router = APIRouter()
-templates = Jinja2Templates(directory=str(Path(__file__).resolve().parent.parent / "templates"))
 
 
 def get_db():
@@ -47,43 +44,16 @@ class GpuCompleteRequest(BaseModel):
     transcription: str
 
 
+@router.get("/")
+def root_redirect():
+    from fastapi.responses import RedirectResponse
+
+    return RedirectResponse("/panel", status_code=303)
+
+
 @router.get("/health")
 def health():
     return {"status": "ok", "service": "ects"}
-
-
-@router.get("/", response_class=HTMLResponse)
-def dashboard(request: Request, db=Depends(get_db)):
-    jobs = db.query(SessionJob).order_by(SessionJob.created_at.desc()).limit(50).all()
-    return templates.TemplateResponse("dashboard.html", {"request": request, "jobs": jobs, "JobStatus": JobStatus})
-
-
-@router.get("/jobs/{job_id}", response_class=HTMLResponse)
-def job_detail(request: Request, job_id: int, db=Depends(get_db)):
-    job = db.query(SessionJob).filter(SessionJob.id == job_id).first()
-    if not job:
-        raise HTTPException(404)
-    corrections = [c for c in job.corrections if c.status == CorrectionStatus.PENDING]
-    return templates.TemplateResponse(
-        "job_detail.html", {"request": request, "job": job, "corrections": corrections, "JobStatus": JobStatus}
-    )
-
-
-@router.post("/jobs/{job_id}/approve-review")
-def approve_review(job_id: int, db=Depends(get_db), _=Depends(verify_token)):
-    job = db.query(SessionJob).filter(SessionJob.id == job_id).first()
-    if not job or job.status != JobStatus.AWAITING_REVIEW:
-        raise HTTPException(400, "Job not awaiting review")
-    job.status = JobStatus.PENDING
-    job.current_step = __import__("app.db.models", fromlist=["JobStep"]).JobStep.GENERATE
-    db.commit()
-    return {"ok": True}
-
-
-@router.post("/corrections/{correction_id}/decide")
-def decide_correction(correction_id: int, approved: bool, db=Depends(get_db), _=Depends(verify_token)):
-    item = approve_correction(db, correction_id, approved)
-    return {"id": item.id, "status": item.status.value}
 
 
 @router.post("/v1/gpu/claim", response_model=GpuClaimResponse | None)

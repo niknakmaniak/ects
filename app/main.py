@@ -5,8 +5,10 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
 
-from app.api.routes import router
+from app.api.panel_routes import router as panel_router
+from app.api.routes import router as api_router
 from app.config import get_settings
 from app.db.models import get_session_factory, init_db
 from app.services.pipeline import JobRunner, Pipeline
@@ -44,7 +46,10 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="ECTS", version="0.1.0", lifespan=lifespan)
-app.include_router(router)
+settings = get_settings()
+app.add_middleware(SessionMiddleware, secret_key=settings.ects_panel_secret or settings.ects_api_token, https_only=False)
+app.include_router(panel_router)
+app.include_router(api_router)
 
 static_dir = Path(__file__).parent / "static"
 if static_dir.exists():

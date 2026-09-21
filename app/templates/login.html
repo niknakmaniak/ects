@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECTS — Connexion</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <h1>ECTS</h1>
+    <p class="subtitle">Dépôt de séances de cours</p>
+    {% if error %}<p class="flash error">{{ error }}</p>{% endif %}
+    <form method="post" action="/login" class="stack">
+      <label>Utilisateur<input type="text" name="username" required autocomplete="username"></label>
+      <label>Mot de passe<input type="password" name="password" required autocomplete="current-password"></label>
+      <button type="submit">Se connecter</button>
+    </form>
+  </main>
+</body>
+</html>

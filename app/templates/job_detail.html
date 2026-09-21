@@ -2,20 +2,26 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ECTS — {{ job.slug }}</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <header>
-    <h1>{{ job.subject }} — {{ job.session_date }}</h1>
-    <p><a href="/">← Retour</a></p>
+  <header class="topbar">
+    <div>
+      <h1>{{ job.subject }} — {{ job.session_date }}</h1>
+      <p><a href="/panel">← Retour au panel</a></p>
+    </div>
   </header>
-  <main>
-    <section class="meta">
-      <p><strong>Statut :</strong> {{ job.status.value }}</p>
+  <main class="detail">
+    {% if message %}<p class="flash ok">{{ message }}</p>{% endif %}
+    {% if error %}<p class="flash error">{{ error }}</p>{% endif %}
+
+    <section class="card meta">
+      <p><strong>Statut :</strong> <span class="badge">{{ job.status.value }}</span></p>
       <p><strong>Étape :</strong> {{ job.current_step.value if job.current_step else '—' }}</p>
-      <p><strong>Deadline :</strong> {{ job.deadline_at }}</p>
-      {% if job.error_message %}<p class="error">{{ job.error_message }}</p>{% endif %}
+      <p><strong>Deadline :</strong> {{ job.deadline_at.strftime('%d/%m/%Y %H:%M') }}</p>
+      {% if job.error_message %}<p class="flash error">{{ job.error_message }}</p>{% endif %}
     </section>
 
     {% if job.status.value == 'AWAITING_REVIEW' %}
@@ -24,17 +30,21 @@
     </form>
     {% endif %}
 
-    <section>
+    <section class="card">
       <h2>Corrections en attente</h2>
       {% for c in corrections %}
       <div class="correction">
         <p><strong>{{ c.location }}</strong> — confiance {{ '%.0f'|format(c.confidence * 100) }}%</p>
         <p>{{ c.original }} → <em>{{ c.proposed }}</em></p>
         <p class="evidence">{{ c.evidence }}</p>
-        <form method="post" action="/corrections/{{ c.id }}/decide?approved=true" style="display:inline">
+        <form method="post" action="/corrections/{{ c.id }}/decide" style="display:inline">
+          <input type="hidden" name="job_id" value="{{ job.id }}">
+          <input type="hidden" name="approved" value="true">
           <button type="submit">Valider</button>
         </form>
-        <form method="post" action="/corrections/{{ c.id }}/decide?approved=false" style="display:inline">
+        <form method="post" action="/corrections/{{ c.id }}/decide" style="display:inline">
+          <input type="hidden" name="job_id" value="{{ job.id }}">
+          <input type="hidden" name="approved" value="false">
           <button type="submit" class="secondary">Rejeter</button>
         </form>
       </div>

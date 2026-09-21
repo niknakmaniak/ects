@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECTS — Panel</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>ECTS</h1>
+      <p>Dépôt et suivi des séances</p>
+    </div>
+    <form method="post" action="/logout">
+      <span class="user">{{ user }}</span>
+      <button type="submit" class="secondary">Déconnexion</button>
+    </form>
+  </header>
+
+  <main class="panel-grid">
+    {% if message %}<p class="flash ok">{{ message }}</p>{% endif %}
+    {% if error %}<p class="flash error">{{ error }}</p>{% endif %}
+
+    <section class="card upload-card">
+      <h2>Nouvelle séance</h2>
+      <form method="post" action="/panel/upload" enctype="multipart/form-data" class="stack">
+        <label>
+          Matière
+          <input type="text" name="subject" list="subjects" placeholder="Psychologie" required>
+          <datalist id="subjects">
+            {% for s in subjects %}<option value="{{ s }}"></option>{% endfor %}
+          </datalist>
+        </label>
+        <label>
+          Date du cours
+          <input type="date" name="session_date" required>
+        </label>
+        <label class="file-drop">
+          Fichiers (audio, PDF, PPT, DOCX, transcription…)
+          <input type="file" name="files" multiple required
+            accept=".m4a,.mp3,.wav,.pdf,.ppt,.pptx,.doc,.docx,.txt,.md,.vtt,.srt">
+        </label>
+        <p class="hint">Audio M4A, support prof, syllabus, transcription Apple — deadline auto : lendemain 8h.</p>
+        <button type="submit">Lancer le traitement</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Séances récentes</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Séance</th>
+              <th>Statut</th>
+              <th>Deadline</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for job in jobs %}
+            <tr class="status-{{ job.status.value }}">
+              <td>
+                <strong>{{ job.subject }}</strong><br>
+                <small>{{ job.session_date }}</small>
+              </td>
+              <td><span class="badge">{{ job.status.value }}</span></td>
+              <td>{{ job.deadline_at.strftime('%d/%m %H:%M') }}</td>
+              <td><a href="/jobs/{{ job.id }}">Ouvrir</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">Aucune séance pour l'instant.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

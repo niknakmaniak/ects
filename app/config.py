@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     ects_api_token: str = "dev-token"
     ects_gpu_worker_token: str = "gpu-dev-token"
 
+    ects_panel_user: str = "admin"
+    ects_panel_password: str = "change-me-panel"
+    ects_panel_secret: str = ""
+
     ects_default_deadline_hour: int = 8
     ects_lease_minutes: int = 5
 

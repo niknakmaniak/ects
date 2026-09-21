@@ -1,0 +1,12 @@
+ECTS GPU Worker — ASUS
+
+1. Extraire ce zip n'importe où (ex. C:\ects-gpu-worker)
+2. PowerShell :
+   .\install.ps1
+3. Vérifier .env (token déjà prérempli)
+4. .\run.ps1
+
+VPS : http://148.113.242.154:8080
+UI VPS : http://148.113.242.154:8080/ (depuis n'importe où)
+
+Le worker tourne en boucle : laisse la fenêtre ouverte quand ton PC ASUS est allumé.

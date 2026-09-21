@@ -37,6 +37,8 @@ def main():
 
     api_token = secrets.token_hex(24)
     gpu_token = secrets.token_hex(24)
+    panel_password = secrets.token_urlsafe(16)
+    panel_secret = secrets.token_hex(32)
 
     env_content = textwrap.dedent(
         f"""
@@ -48,11 +50,14 @@ def main():
         ECTS_API_PORT=8080
         ECTS_API_TOKEN={api_token}
         ECTS_GPU_WORKER_TOKEN={gpu_token}
+        ECTS_PANEL_USER=admin
+        ECTS_PANEL_PASSWORD={panel_password}
+        ECTS_PANEL_SECRET={panel_secret}
         ECTS_DEFAULT_DEADLINE_HOUR=8
         LLM_PROVIDER=moonshot
         LLM_BASE_URL=https://api.moonshot.cn/v1
         LLM_API_KEY={MOONSHOT_KEY}
-        LLM_MODEL=moonshot-v1-128k
+        LLM_MODEL=kimi-k3
         LLM_MONTHLY_BUDGET_EUR=999
         GIT_REMOTE_URL=https://github.com/niknakmaniak/ects.git
         GIT_AUTO_PUSH=false
