@@ -8,6 +8,7 @@ service-account.json
 # Runtime
 data/
 work/
+dist/
 *.db
 __pycache__/
 *.pyc
@@ -26,6 +27,4 @@ venv/
 /models/
 /adapters/
 
-# OS
-.DS_Store
-Thumbs.db
+profiles/test.json

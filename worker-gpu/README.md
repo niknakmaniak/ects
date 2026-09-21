@@ -1,44 +1,33 @@
 # ECTS GPU Worker (ASUS)
 
-Transcrit l'audio **localement** (Whisper + CUDA). L'audio est téléchargé depuis le VPS puis **jamais** renvoyé ailleurs.
+Installation **automatique** sur Windows + NVIDIA.
 
-## Prérequis
-
-- Windows 11 + NVIDIA RTX (CUDA)
-- Python 3.11+
-- [CUDA Toolkit](https://developer.nvidia.com/cuda-downloads) compatible avec PyTorch
-
-## Installation
+## Quick start
 
 ```powershell
-cd ects-gpu-worker
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-pip install -r requirements.txt
-copy .env.example .env
-# Éditer .env : ECTS_GPU_WORKER_TOKEN=...
+# Extraire le zip, puis :
+.\install.ps1   # installe Python (winget) si besoin, GPU check, deps
+.\run.ps1       # lance le worker (relance install.ps1 si .venv absent)
 ```
 
-## Lancer
+## Ce que install.ps1 fait
+
+1. Verifie `nvidia-smi` (pilotes NVIDIA)
+2. Installe **Python 3.12** via `winget` si absent
+3. Cree `.venv`, installe PyTorch CUDA + faster-whisper
+4. Cree `.env` depuis `.env.example` si manquant
+
+Options :
 
 ```powershell
-.\run.ps1
+.\install.ps1 -SkipGpuCheck      # PC sans NVIDIA (debug seulement)
+.\install.ps1 -SkipPythonInstall # Python deja installe manuellement
 ```
 
-Ou :
-
-```powershell
-.\.venv\Scripts\python.exe worker.py
-```
-
-Le worker poll le VPS toutes les 10 s. Quand une séance a de l'audio sans transcription, il la traite automatiquement.
-
-## Variables
+## Configuration (.env)
 
 | Variable | Description |
 |----------|-------------|
 | `GPU_WORKER_URL` | `http://148.113.242.154:8080` |
-| `ECTS_GPU_WORKER_TOKEN` | Token GPU du VPS (`/opt/ects/.env`) |
-| `WHISPER_MODEL` | `large-v3` recommandé |
-| `WORKER_ID` | Nom libre pour identifier ce PC |
+| `ECTS_GPU_WORKER_TOKEN` | Token du VPS |
+| `WHISPER_MODEL` | `large-v3` |

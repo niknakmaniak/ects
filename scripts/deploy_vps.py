@@ -60,7 +60,10 @@ def main():
         LLM_MODEL=kimi-k3
         LLM_MONTHLY_BUDGET_EUR=999
         GIT_REMOTE_URL=https://github.com/niknakmaniak/ects.git
-        GIT_AUTO_PUSH=false
+        GIT_USER_NAME=ECTS Bot
+        GIT_USER_EMAIL=ects@bot.local
+        GIT_AUTO_PUSH=true
+        GIT_GITHUB_TOKEN={os.environ.get("GIT_GITHUB_TOKEN", "")}
         WHISPER_MODEL=large-v3
         LORA_MIN_SESSIONS=3
         """
@@ -91,7 +94,9 @@ def main():
     print("\n=== DEPLOY OK ===")
     print(f"ECTS_API_TOKEN={api_token}")
     print(f"ECTS_GPU_WORKER_TOKEN={gpu_token}")
-    print("UI: http://127.0.0.1:8080 (via SSH tunnel ou Tailscale)")
+    print(f"ECTS_PANEL_USER=admin")
+    print(f"ECTS_PANEL_PASSWORD={panel_password}")
+    print("Panel: http://148.113.242.154:8080/panel")
     print(f"Tokens saved in {ECTS_DIR}/.env on VPS")
 
 

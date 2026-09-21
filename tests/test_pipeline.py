@@ -2,30 +2,13 @@
 
 import pytest
 
-from app.config import Settings
-from app.db.models import JobStatus, init_db, get_session_factory
 from app.services.audit import build_course_ir, persist_audit
 from app.services.extract import extract_all
 from app.services.align import align_sources
 from app.services.jobs import create_job, parse_session_folder
 from app.services.subject_profile import load_profile, should_train_lora, update_profile_from_session
 from app.services.pipeline import claim_gpu_job, complete_gpu_transcription
-
-
-@pytest.fixture
-def db(tmp_path, monkeypatch):
-    monkeypatch.setenv("ECTS_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("ECTS_REPO_ROOT", str(tmp_path / "repo"))
-    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'test.db'}")
-    from app.config import get_settings
-
-    get_settings.cache_clear()
-    settings = get_settings()
-    settings.ects_data_dir.mkdir(parents=True)
-    settings.ects_repo_root.mkdir(parents=True)
-    (settings.ects_repo_root / "templates" / "latex").mkdir(parents=True)
-    init_db()
-    yield get_session_factory()
+from app.db.models import JobStatus
 
 
 def test_parse_session_folder():
@@ -39,7 +22,7 @@ def test_golden_psychologie_pipeline(db, tmp_path):
     import shutil
 
     shutil.copytree(src, fixture)
-    session = db()
+    session = db
     job = create_job(session, fixture, "Psychologie__2026-09-15", "Psychologie", "2026-09-15")
     work = __import__("pathlib").Path(job.work_path)
 
@@ -56,7 +39,7 @@ def test_golden_psychologie_pipeline(db, tmp_path):
 
 
 def test_gpu_claim_and_complete(db, tmp_path):
-    session = db()
+    session = db
     fixture = tmp_path / "Psychologie__2026-09-16"
     fixture.mkdir()
     (fixture / "READY.txt").write_text("x")
@@ -76,7 +59,7 @@ def test_gpu_claim_and_complete(db, tmp_path):
 
 
 def test_gpu_stale_fencing_rejected(db, tmp_path):
-    session = db()
+    session = db
     fixture = tmp_path / "Psychologie__2026-09-17"
     fixture.mkdir()
     (fixture / "READY.txt").write_text("x")

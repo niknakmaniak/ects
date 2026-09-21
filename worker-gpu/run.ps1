@@ -3,8 +3,8 @@ $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
 
 if (-not (Test-Path ".venv")) {
-    Write-Host "Crée d'abord le venv : voir README.md"
-    exit 1
+    Write-Host "Premiere installation detectee — lancement install.ps1"
+    & "$Root\install.ps1"
 }
 
 if (Test-Path ".env") {

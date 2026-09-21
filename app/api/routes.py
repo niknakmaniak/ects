@@ -83,12 +83,14 @@ def gpu_download_audio(job_id: int, filename: str, db=Depends(get_db), role=Depe
         raise HTTPException(409, "Job not available for GPU download")
     from app.services.jobs import list_input_files
 
-    allowed = {p.name for p in list_input_files(job) if p.suffix.lower() in {".m4a", ".mp3", ".wav", ".aac"}}
-    if filename not in allowed:
+    allowed = {
+        p: p.name
+        for p in list_input_files(job)
+        if p.suffix.lower() in {".m4a", ".mp3", ".wav", ".aac"}
+    }
+    path = next((p for p, name in allowed.items() if name == filename), None)
+    if not path or not path.is_file():
         raise HTTPException(404, "Audio file not found")
-    path = Path(job.work_path) / "input" / filename
-    if not path.is_file():
-        raise HTTPException(404)
     return FileResponse(path, filename=filename)
 
 

@@ -38,8 +38,9 @@ class Settings(BaseSettings):
 
     git_remote_url: str = "https://github.com/niknakmaniak/ects.git"
     git_user_name: str = "ECTS Bot"
-    git_user_email: str = "ects@localhost"
+    git_user_email: str = "ects@bot.local"
     git_auto_push: bool = False
+    git_github_token: str = ""
 
     gpu_worker_url: str = ""
     whisper_model: str = "large-v3"
